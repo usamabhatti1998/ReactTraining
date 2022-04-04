@@ -1,0 +1,131 @@
+
+  import ToDo from '../Components/ToDo.js' 
+  import Test from '../Components/Test.js' 
+  import '../Stylesheets/AppStylesheet.css'
+  import {useState, useEffect} from 'react'
+  import {render} from 'react-dom'
+  import {cloneDeep} from "lodash"
+
+  import Modal from '../Components/Modal.js' 
+
+  export default function ToDoApp(props) {
+    //states declared
+    const [state, setState] = useState(false)
+    const [modalState, setModalState] = useState(false)
+    const [cardData, setCardData] = useState([{id:"1", text:"Sample Text "},{id:"2", text:"Sample Text "},{id:"3", text:"Sample Text"},{id:"4", text:"Sample Text"},{id:"5", text:"Sample Text"},{id:"6", text:"Sample Text"} ])
+    const [TaskID, setTaskID] = useState(" ")
+    const [TaskText, setTaskText] = useState(" ")
+    const [editStatus, setEditStatus] = useState(" ")
+    const [update, setUpdate] = useState(false) //open update window if true
+    
+
+  //setID function
+  function updateID() {
+
+  }
+
+  // set Text function
+  function updateText() {
+  }
+  function showStates() {
+
+    console.log("Value in TaskID is ", TaskID);
+    console.log("Value in Task Text  is " , TaskText);
+    let entry = {id:TaskID, text:TaskText};//creating a new entry 
+    console.log(entry) 
+    let list = cloneDeep(cardData); //copying main string
+    list.push(entry); // appending the new entry in string
+    setCardData(list) ;//assinging new value to state
+    setModalState(false)
+
+  }
+
+    // ADD NEW Click
+    function createNewCard()
+    { setModalState(true) }
+
+    function BacktoHome()
+    { setModalState(false) }
+
+    //upadte handler
+    function UpdateHandler(ID,Text, Index) 
+    {
+      setUpdate(true)
+
+    }
+
+    //delete function 
+    function DeleteHandler(ID)
+    { 
+
+  for (let i=0;i<cardData.length;i++) { 
+    if (cardData[i].id === ID )
+    {   
+      let Card = cloneDeep(cardData)
+      let NewCard =  Card.splice(i,1)
+      console.log(NewCard)
+      console.log(Card)
+      setCardData(Card)
+      console.log("Your Index is ", i)
+      break;
+    } 
+  } //end for loop
+
+      
+      } //function end
+
+    // on Save Button 
+    function  newTaskSave() 
+    { console.log("You Tried Saving New One") }    
+          
+
+  if (modalState) {
+    return (
+      <div> 
+            {/* <h1> Enter New Task</h1>  */}
+            <button className="mainButton" id='addNew' onClick={createNewCard}> ADD New </button>
+            <div id="mainDiv">
+          <div className="cardDiv" id="cardDiv">
+              <button className="btns" onClick={BacktoHome} > Cancel </button>
+      
+              <input className="modalInput" placeholder="Enter ID" onChange={event => setTaskID(event.target.value)} />
+          
+              <input className="modalInput"  placeholder="Enter Task" onChange={event => setTaskText(event.target.value)}  />
+              <br />
+              <button className="btns" onClick={showStates}  > Save</button>
+          </div>
+    
+  </div> 
+      </div> );
+  
+
+  } //end if
+
+
+
+
+  
+
+  else {
+    return (
+
+      
+    <div> 
+      <button  className="mainButton" id='addNew' onClick={createNewCard} > ADD New</button>
+      {cardData.map((pages, index) => (
+                    
+              <div key={`contentCard-${index}`} className="cardDiv" id="cardDiv">
+                  <button className="btns" onClick={() => UpdateHandler(pages.id, pages.text, index)} > Edit</button> 
+                  <p> Card No. {index} </p>
+                  <p> ID: {pages.id}  </p>
+                  <p contentEditable="true" > {pages.text} for Card {index} </p>
+                  <br />
+                  <button className="btns"  onClick={() => DeleteHandler(pages.id)} > Delete</button>
+              </div>
+
+  ))}
+    </div>
+      );
+
+  } //end else
+  } //end function
